@@ -1,0 +1,50 @@
+
+<HTML>
+    <head>
+        <style>
+            .list{
+                display: block;
+            }
+        </style>
+        <title> files </title>
+   </head>
+
+    <body>
+        <button onclick="pickdir();">hi</button>
+        <div id="files"></div>
+        <script>
+        let dir;
+        const files = document.getElementById('files');
+        
+        async function pickdir(){
+            dir = await showDirectoryPicker();
+            showdir();
+        }
+        
+        async function opendir(path){
+            const newdir = await dir.getDirectoryHandle(path);
+            dir = newdir;
+            await showdir();
+        }
+        
+        async function showdir(){
+            for (const child of files.children) {
+                child.remove();
+            }
+            let entry = document.createElement('button');
+            entry.innerText = '..';
+            entry.setAttribute('class','list')
+            entry.setAttribute('onclick','opendir(this.innerText);')
+            files.appendChild(entry);
+            for await (i of dir.keys()){
+                let entry = document.createElement('button');
+                entry.innerText = i;
+                entry.setAttribute('class','list')
+                entry.setAttribute('onclick','opendir(this.innerText);')
+                files.appendChild(entry);
+            }
+        }
+        </script>
+
+    </body>
+</html> 
